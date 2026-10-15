@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mohamed Nejjari — Portfolio
 
-## Getting Started
+A personal software engineering portfolio built with the Next.js App Router. It presents selected project case studies, an education page, and interactive engineering-principle displays. Project and academic information lives in typed static modules; the application has no database, contact form, or third-party runtime service.
 
-First, run the development server:
+## Stack and structure
+
+- Next.js 16, React 19, strict TypeScript, and Tailwind CSS 4
+- Base UI primitives, Lucide icons, and Motion for focused interactions
+- `app/` contains the routes, metadata, robots and sitemap handlers, root layout, and global styles.
+- `components/layout/` contains shared site chrome; `components/sections/` contains page sections; `components/ui/` contains low-level primitives.
+- `features/projects/` contains project cards, filtering, artwork, and source links.
+- `data/` contains the typed project, education, and working-principle content.
+- `tests/` contains Vitest and Playwright suites.
+
+Server Components are the default. Client Components are limited to browser interactions. The UI uses system font stacks and does not fetch fonts or other external resources at runtime.
+
+## Requirements and local development
+
+Use Node.js 20.9 or newer (the installed Next.js package requirement) and npm.
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`. No environment variables are required for local development.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quality checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run typecheck
+npm run test:unit
+npm run test:e2e
+```
 
-## Learn More
+The E2E command builds the standalone production app, starts it locally, and runs Playwright in Chromium. Install the browser locally with `npx playwright install chromium` if needed. GitHub Actions installs Chromium and runs all four checks, then builds the production Docker image; the E2E build also verifies the production build.
 
-To learn more about Next.js, take a look at the following resources:
+## SEO origin configuration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Set `SITE_URL` to the verified HTTPS origin (origin only, with no path) when building for production. It supplies canonical URLs, page-specific Open Graph URLs, and absolute sitemap/robots links. When configured, the social preview uses the existing CV portrait at `/cv/photo.jpg`. When `SITE_URL` is unset, canonical links, social preview metadata, and absolute sitemap entries are omitted rather than pointing crawlers at a guessed or local development host.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Production runtime and Docker
 
-## Deploy on Vercel
+```bash
+npm run build
+npm run start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The build uses Next.js standalone output and includes `public/` and `.next/static/` in `.next/standalone/`. The app listens on `HOSTNAME` and `PORT` (defaults in Docker: `0.0.0.0:3000`). The runtime needs no credentials or application secrets. The container runs as the non-root `node` user and includes a health check.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Build the container on Linux using the same Node 22 image for build and runtime. Once the public site origin is known, replace the example with that verified origin:
+
+```bash
+docker build --build-arg SITE_URL="https://your-domain.example" -t mohamed-nejjari-portfolio .
+docker run --rm -p 3000:3000 mohamed-nejjari-portfolio
+```
+
+Next standalone output built on Windows may contain non-relocatable absolute junctions, so use the Linux Docker build for deployment. The runtime user can write its deployment directory for Next.js cache data. Review persistent/shared cache handling before running multiple ephemeral replicas.
+
+No cloud deployment target or credentials are configured, so this repository does not publish or deploy automatically. GitHub Actions verifies changes; Dependabot proposes npm and Actions updates without auto-merging them.
