@@ -10,7 +10,7 @@ export function Hero() {
       <div className="hero-copy">
         <p className="eyebrow hero-eyebrow">
           <span aria-hidden="true" className="status-dot" />
-          Software engineering · internship / alternance
+          Software engineering ·  alternance
         </p>
         <h1 id="hero-title">
           NEJJARI
@@ -23,7 +23,7 @@ export function Hero() {
           delivery across the stack.
         </p>
         <p className="role-note">
-          Looking for a software engineering internship or alternance.
+          Looking for a software engineering alternance.
         </p>
         <div className="hero-actions">
           <a className="button-primary" href="#contact">
