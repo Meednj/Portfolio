@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
-import { CustomCursor } from "@/components/layout/custom-cursor";
-import { getSiteUrl } from "@/lib/site-url";
-import "./globals.css";
+import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
+import { CustomCursor } from '@/components/layout/custom-cursor';
+import { getSiteUrl } from '@/lib/site-url';
+import './globals.css';
 
 const siteUrl = getSiteUrl();
-const siteName = "Mohamed Nejjari";
+const siteName = 'Mohamed Nejjari';
 const description =
-  "Mohamed Nejjari is a software engineering student focused on backend engineering, full-stack development, cloud infrastructure and DevOps.";
+  'Mohamed Nejjari is a software engineering student focused on backend engineering, full-stack development, cloud infrastructure and DevOps.';
 const socialImage = siteUrl
-  ? new URL("/cv/photo.jpg", siteUrl).toString()
+  ? new URL('/cv/photo.jpg', siteUrl).toString()
   : undefined;
 
 export const metadata: Metadata = {
@@ -19,10 +20,10 @@ export const metadata: Metadata = {
   },
   description,
   applicationName: `${siteName} Portfolio`,
-  ...(siteUrl ? { alternates: { canonical: "/" } } : {}),
+  ...(siteUrl ? { alternates: { canonical: '/' } } : {}),
   openGraph: {
-    type: "website",
-    locale: "en_US",
+    type: 'website',
+    locale: 'en_US',
     siteName: `${siteName} Portfolio`,
     title: `${siteName} — Software Engineer`,
     description,
@@ -39,17 +40,20 @@ export const metadata: Metadata = {
       : {}),
   },
   twitter: {
-    card: "summary_large_image",
+    card: 'summary_large_image',
     title: `${siteName} — Software Engineer`,
     description,
     ...(socialImage ? { images: [socialImage] } : {}),
   },
 };
+type RootLayoutProps = {
+  children: ReactNode;
+};
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         {children}
         <CustomCursor />
       </body>
