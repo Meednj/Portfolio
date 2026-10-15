@@ -5,7 +5,7 @@ import { workingPrinciples } from "../../data/working-principles";
 test("homepage shows the project preview and working detail links", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page).toHaveTitle(/Mohamed Nejjari/);
+  await expect(page).toHaveTitle("Mohamed Nejjari — Software Engineer");
   await expect(page.getByRole("heading", { level: 1, name: "NEJJARI Mohamed" })).toBeVisible();
   await expect(page.getByText("Software engineering · Full Stack / DevOps")).toBeVisible();
   await expect(
@@ -27,6 +27,67 @@ test("homepage shows the project preview and working detail links", async ({ pag
       await expect(sourceLink).toHaveCount(0);
     }
   }
+});
+
+test("navbar wordmark keeps its name hierarchy across viewport sizes", async ({ page }) => {
+  for (const width of [1440, 768, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+
+    const name = page.locator(".header-topline .navbar-wordmark-name");
+    const primary = name.locator(".navbar-wordmark-primary");
+    const secondary = name.locator(".navbar-wordmark-secondary");
+    await expect(primary).toHaveText("NEJJARI");
+    await expect(secondary).toHaveText("Mohamed");
+    await expect(primary).toHaveCSS("font-weight", "800");
+    await expect(secondary).toHaveCSS("font-size", "10.56px");
+    await expect(name).toBeVisible();
+    expect(await page.locator("body").evaluate((body) => body.scrollWidth)).toBeLessThanOrEqual(width);
+    if (process.env.WORDMARK_VISUAL_QA === "1") {
+      await page.screenshot({ path: `.next/wordmark-${width}.png` });
+    }
+  }
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "Open navigation" }).click();
+  const mobileName = page.locator(".mobile-menu-topline .navbar-wordmark-name");
+  await expect(mobileName.locator(".navbar-wordmark-primary")).toHaveText("NEJJARI");
+  await expect(mobileName.locator(".navbar-wordmark-secondary")).toHaveText("Mohamed");
+  if (process.env.WORDMARK_VISUAL_QA === "1") {
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: ".next/wordmark-mobile-menu.png" });
+  }
+});
+
+test("brand logo and browser icons resolve from the App Router metadata", async ({ page }) => {
+  for (const width of [1440, 768, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/");
+
+    for (const selector of ["header .wordmark img", "footer .wordmark img"]) {
+      const logo = page.locator(selector);
+      await expect(logo).toBeVisible();
+      await expect(logo).toHaveAttribute("alt", "");
+      await expect(logo).toHaveJSProperty("naturalWidth", 454);
+      await expect(logo).toHaveJSProperty("naturalHeight", 316);
+    }
+
+    expect(await page.locator("body").evaluate((body) => body.scrollWidth)).toBeLessThanOrEqual(width);
+  }
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+
+  const icon = page.locator('link[rel="icon"][type="image/png"]');
+  await expect(icon).toHaveCount(1);
+  const iconResponse = await page.request.get(new URL(await icon.getAttribute("href") ?? "", page.url()).toString());
+  expect(iconResponse.ok()).toBeTruthy();
+  expect(iconResponse.headers()["content-type"]).toContain("image/png");
+
+  const appleIcon = page.locator('link[rel="apple-touch-icon"]');
+  await expect(appleIcon).toHaveCount(1);
+  const appleResponse = await page.request.get(new URL(await appleIcon.getAttribute("href") ?? "", page.url()).toString());
+  expect(appleResponse.ok()).toBeTruthy();
 });
 
 test("page metadata and crawler files use the configured canonical origin", async ({ page }) => {
@@ -120,6 +181,7 @@ test("unknown project slugs return a noindex not-found page", async ({ page }) =
     "content",
     /noindex/,
   );
+  await expect(page).toHaveTitle("Page not found | Mohamed Nejjari");
   await expect(page.getByRole("link", { name: "Back to home" })).toHaveAttribute(
     "href",
     "/",
@@ -213,7 +275,7 @@ for (const project of projects) {
   test(`project detail route renders ${project.title}`, async ({ page }) => {
     await page.goto(`/projects/${project.slug}`);
 
-    await expect(page).toHaveTitle(new RegExp(project.title));
+    await expect(page).toHaveTitle(`${project.title} | Mohamed Nejjari`);
     await expect(page.locator('meta[name="description"]')).toHaveAttribute(
       "content",
       project.summary,

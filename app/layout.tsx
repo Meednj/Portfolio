@@ -1,13 +1,19 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { Space_Grotesk } from 'next/font/google';
 import { CustomCursor } from '@/components/layout/custom-cursor';
 import { getSiteUrl } from '@/lib/site-url';
 import './globals.css';
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+});
+
 const siteUrl = getSiteUrl();
-const siteName = 'Mohamed Nejjari';
+const siteName = 'NEJJARI Mohamed';
 const description =
-  'Mohamed Nejjari is a software engineering student focused on backend engineering, full-stack development, cloud infrastructure and DevOps.';
+  'NEJJARI Mohamed is a software engineering student focused on backend engineering, full-stack development, cloud infrastructure and DevOps.';
 const socialImage = siteUrl
   ? new URL('/cv/photo.jpg', siteUrl).toString()
   : undefined;
@@ -53,7 +59,7 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="flex min-h-full flex-col">
+      <body className={`${spaceGrotesk.variable} flex min-h-full flex-col`} suppressHydrationWarning>
         {children}
         <CustomCursor />
       </body>

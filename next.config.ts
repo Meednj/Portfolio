@@ -1,8 +1,8 @@
-import type { NextConfig } from "next";
-import { networkInterfaces } from "node:os";
+import type { NextConfig } from 'next';
+import { networkInterfaces } from 'node:os';
 
 function isPrivateIpv4(address: string): boolean {
-  const [first, second] = address.split(".").map(Number);
+  const [first, second] = address.split('.').map(Number);
 
   return (
     first === 10 ||
@@ -16,26 +16,33 @@ function getPrivateNetworkOrigins(): string[] {
     .flatMap((addresses) => addresses ?? [])
     .filter(
       ({ address, family, internal }) =>
-        family === "IPv4" && !internal && isPrivateIpv4(address),
+        family === 'IPv4' && !internal && isPrivateIpv4(address),
     )
     .map(({ address }) => address);
 }
 
 const nextConfig: NextConfig = {
   /* config options here */
-  output: "standalone",
+  output: 'standalone',
+
+  // Hide the Next.js development indicator
+  devIndicators: false,
+
   allowedDevOrigins:
-    process.env.NODE_ENV === "development" ? getPrivateNetworkOrigins() : [],
+    process.env.NODE_ENV === 'development' ? getPrivateNetworkOrigins() : [],
+
   experimental: {
     agentFeedback: true,
   },
+
   cacheComponents: true,
   partialPrefetching: true,
+
   turbopack: {
     rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
+      '*.css': {
+        loaders: ['@tailwindcss/turbopack'],
+        as: '*.css',
       },
     },
   },

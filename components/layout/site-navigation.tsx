@@ -19,6 +19,15 @@ const links: readonly {
   { key: "education", number: "03", href: "/education", label: "Education" },
 ];
 
+function WordmarkName() {
+  return (
+    <span className="navbar-wordmark-name">
+      <span className="navbar-wordmark-primary">NEJJARI</span>
+      <span className="navbar-wordmark-secondary">Mohamed</span>
+    </span>
+  );
+}
+
 export function SiteNavigation() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -82,7 +91,7 @@ export function SiteNavigation() {
         <div className="header-topline">
           <Link aria-label="Mohamed Nejjari, home" className="wordmark" href="/#top">
             <BrandMark className="wordmark-mark" />
-            <span>NEJJARI Mohamed</span>
+            <WordmarkName />
           </Link>
 
           <p className="masthead-note">
@@ -143,7 +152,7 @@ export function SiteNavigation() {
           <div className="mobile-menu-topline">
             <Link aria-label="Mohamed Nejjari, home" className="wordmark" href="/#top" onClick={() => closeMenu()}>
               <BrandMark className="wordmark-mark" />
-              <span>Mohamed Nejjari</span>
+              <WordmarkName />
             </Link>
             <button
               aria-label="Close navigation"
