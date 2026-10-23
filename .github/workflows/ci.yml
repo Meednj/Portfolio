@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 35
     env:
       # Reserved test-only origin; production builds must supply the verified public origin.
-      SITE_URL: https://portfolio.example.test
+      SITE_URL: https://nejjarimohamed-portfolio.vercel.app/
     steps:
       - name: Check out repository
         uses: actions/checkout@v7

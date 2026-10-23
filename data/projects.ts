@@ -69,11 +69,11 @@ export const projects: readonly Project[] = [
     slug: 'estm-platform',
     title: 'ESTM Platform',
     category: 'Institutional website',
-    summary: 'A React website for browsing EST Meknes information, departments, admissions and contact pages.',
+    summary: 'A Next.js website for browsing EST Meknes information, departments, admissions and contact pages.',
     context: 'Local repository: est-website',
     repositoryUrl: 'https://github.com/Meednj/ESTM-Website',
     disciplines: ['Frontend'],
-    technologies: ['JavaScript', 'React 19', 'Vite', 'React Router 7', 'Tailwind CSS 4', 'Framer Motion', 'Lucide React', 'Lenis'],
+    technologies: ['JavaScript', 'Next.js 16', 'Vite', 'React Router 7', 'Tailwind CSS 4', 'Framer Motion', 'Lucide React', 'Lenis'],
     implementedFeatures: [
       'Routes for the home, about, department, admissions, contact and student pages.',
       'Responsive navigation with department and admissions menus.',
